@@ -1,0 +1,459 @@
+{
+  "navigation": {
+    "home": "Home",
+    "tasks": "Tasks",
+    "feedbacks": "Feedbacks",
+    "analysis": "Analysis",
+    "profile": "Profile",
+    "notifications": "Notifications"
+  },
+  "login": {
+    "title": "Enter PIN",
+    "subtitle": "Enter your 4-digit PIN to continue",
+    "errors": {
+      "phoneNotFound": "Phone number not found",
+      "completeOnboarding": "Please complete onboarding first",
+      "loginFailed": "Login Failed",
+      "accountNotFound": "Account Not Found",
+      "invalidCredentials": "Invalid phone number or PIN",
+      "accountNotRegistered": "This phone number is not registered. Please:\n\n1. Contact your clinic to set up your account\n2. Ensure you're using the correct phone number\n3. Verify your PIN is correct"
+    },
+    "success": {
+      "loginSuccessful": "Login successful"
+    }
+  },
+  "onboarding": {
+    "phoneNumber": {
+      "title": "Enter Phone Number",
+      "subtitle": "We'll use this to verify your account",
+      "placeholder": "Enter phone number",
+      "continue": "Continue",
+      "checking": "Checking...",
+      "errors": {
+        "phoneRequired": "Please enter a phone number",
+        "invalidPhone": "Please enter a valid phone number",
+        "invalidPhoneForCountry": "Please enter a valid phone number for the selected country.",
+        "notRegistered": "Phone Number Not Registered",
+        "notRegisteredMessage": "This phone number is not registered with any clinic. Please contact your clinic to add your account before using this app.",
+        "verificationError": "Unable to verify phone number. Please check your internet connection and try again."
+      },
+      "privacy": {
+        "title": "Privacy Summary",
+        "dataUsage": "Data Usage & Privacy",
+        "dataUsageDescription": "We collect and use your phone number for the following purposes:",
+        "accountVerification": "Account Verification:",
+        "accountVerificationText": "Your phone number is used to verify your identity and secure your account.",
+        "communication": "Communication:",
+        "communicationText": "We may send you important notifications, updates, and reminders related to your health and wellness journey.",
+        "security": "Security:",
+        "securityText": "Your phone number helps us protect your account from unauthorized access and fraud.",
+        "support": "Support:",
+        "supportText": "We use your contact information to provide customer support when needed.",
+        "dataProtection": "Data Protection",
+        "dataProtectionText": "Your phone number is stored securely and will never be shared with third parties without your explicit consent, except as required by law.",
+        "yourRights": "Your Rights",
+        "yourRightsText": "You have the right to access, update, or delete your personal information at any time through the app settings.",
+        "footer": "By continuing, you agree to our Terms & Conditions and Privacy Policy.",
+        "cancel": "Cancel",
+        "acceptContinue": "Accept & Continue",
+        "termsRequired": "Terms Required",
+        "termsRequiredMessage": "You must accept the terms and conditions to use this app.",
+        "exitApp": "Exit App"
+      }
+    },
+    "setPin": {
+      "title": "Set Your PIN",
+      "confirmTitle": "Confirm Your PIN",
+      "subtitle": "Create a 4-digit PIN to secure your account",
+      "confirmSubtitle": "Re-enter your PIN to confirm",
+      "skip": "Skip (Use default PIN: 0000)",
+      "errors": {
+        "pinsDoNotMatch": "PINs do not match",
+        "tryAgain": "Please try again",
+        "saveFailed": "Failed to save PIN",
+        "syncWarning": "PIN saved locally but failed to sync to server. You may need to set it again."
+      }
+    },
+    "profile": {
+      "title": "Profile Setup",
+      "subtitle": "Complete your profile information"
+    },
+    "video": {
+      "title": "Welcome Video",
+      "subtitle": "Watch this introduction video"
+    }
+  },
+  "home": {
+    "title": "Home",
+    "taskSummary": "You have {count} Task{plural} Today!",
+    "todaysTask": "Today's task",
+    "seeAll": "See All >",
+    "noTasksToday": "No tasks for today",
+    "allCaughtUp": "You're all caught up! 🎉",
+    "whatsUpThisWeek": "What's up this {period}",
+    "whatsUpThisMonth": "What's up this month",
+    "totalActivities": "Total {count} Activit{plural} this {period}!",
+    "week": "Week",
+    "month": "Month",
+    "today": "Today",
+    "todaysActivities": "Today's Activities",
+    "activitiesOn": "Activities on {date}",
+    "noActivities": "No activities on {date}",
+    "loading": "Loading dashboard...",
+    "errors": {
+      "loadError": "Failed to load dashboard data"
+    }
+  },
+  "tasks": {
+    "title": "Tasks",
+    "filters": {
+      "mine": "Mine",
+      "clinic": "Clinic",
+      "repeat": "Repeat"
+    },
+    "viewModes": {
+      "weekly": "Weekly",
+      "daily": "Daily"
+    },
+    "createTask": "Create Task",
+    "createNewTask": "Create New Task",
+    "chooseFromTemplates": "Choose From Templates",
+    "completionStatus": "{completed} / {total} completed",
+    "all": "All",
+    "noTasksFound": "No tasks found",
+    "noTasksInCategory": "No tasks in {category} category",
+    "createNewTaskToStart": "Create a new task to get started",
+    "loading": "Loading tasks...",
+    "taskUpdated": "Task Updated",
+    "taskCreated": "Task created successfully",
+    "taskUpdatedSuccess": "Task updated successfully",
+    "errors": {
+      "loadError": "Failed to load tasks"
+    },
+    "timeLabels": {
+      "12Am": "12 Am",
+      "12Pm": "12 Pm",
+      "am": "{hour} Am",
+      "pm": "{hour} Pm"
+    },
+    "days": {
+      "mo": "Mo",
+      "tu": "Tu",
+      "we": "We",
+      "th": "Th",
+      "fr": "Fr",
+      "sa": "Sa",
+      "su": "Su"
+    },
+    "status": {
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "pending": "Pending",
+      "missed": "Missed",
+      "upcoming": "Upcoming"
+    },
+    "taskDetails": "Task details",
+    "untitledTask": "Untitled Task"
+  },
+  "taskDetails": {
+    "title": "Task Details",
+    "loading": "Loading task details...",
+    "errors": {
+      "loadError": "Failed to load task details"
+    }
+  },
+  "createTask": {
+    "title": "Create Task",
+    "subtitle": "Create a new task"
+  },
+  "myTemplates": {
+    "title": "My Templates",
+    "subtitle": "Your saved task templates"
+  },
+  "createTemplate": {
+    "title": "Create Template",
+    "subtitle": "Create a new task template"
+  },
+  "masterWeek": {
+    "title": "Master Week",
+    "subtitle": "Manage your master week schedule"
+  },
+  "createMasterWeek": {
+    "title": "Create Master Week",
+    "subtitle": "Create a new master week schedule"
+  },
+  "masterWeekDetails": {
+    "title": "Master Week Details",
+    "subtitle": "View master week details"
+  },
+  "labels": {
+    "title": "Labels (Areas of Life)",
+    "subtitle": "Manage your task labels"
+  },
+  "feedbacks": {
+    "title": "Feedback",
+    "yourFeedback": "Your Feedback",
+    "areaOfLife": "Area of Life Feedback",
+    "daily": "Daily Feedback",
+    "phq9": "PHQ9"
+  },
+  "areaOfLifeFeedback": {
+    "title": "Area of Life Feedback",
+    "subtitle": "Provide feedback on different areas of your life"
+  },
+  "dailyFeedback": {
+    "title": "Daily Feedback",
+    "subtitle": "Share your daily feedback"
+  },
+  "phq9Feedback": {
+    "title": "PHQ9",
+    "subtitle": "Complete the PHQ9 assessment"
+  },
+  "analysis": {
+    "title": "Analysis",
+    "depressionAnalysis": "Depression Analysis",
+    "subtitle": "View your analysis and insights"
+  },
+  "profile": {
+    "title": "Profile",
+    "updateProfile": "Update Profile",
+    "changePin": "Change PIN",
+    "logOut": "Log Out",
+    "deleteAccount": "Delete My Account",
+    "languages": "Languages",
+    "english": "English",
+    "german": "German",
+    "french": "French",
+    "noEmail": "No email",
+    "user": "User",
+    "loading": "Loading profile...",
+    "changePinModal": {
+      "title": "Change PIN",
+      "oldPin": "Old PIN",
+      "newPin": "New PIN",
+      "confirmPin": "Confirm PIN",
+      "oldPinPlaceholder": "Enter old PIN",
+      "newPinPlaceholder": "Enter new PIN",
+      "confirmPinPlaceholder": "Confirm new PIN",
+      "done": "Done",
+      "errors": {
+        "fillAllFields": "Please fill all fields",
+        "pinsDoNotMatch": "New PINs do not match",
+        "pinMinLength": "PIN must be at least 4 digits",
+        "pinMustBeDifferent": "New PIN must be different from the old PIN",
+        "changeFailed": "Failed to change PIN"
+      },
+      "success": {
+        "pinChanged": "PIN changed successfully",
+        "title": "PIN Change Successfully",
+        "okay": "Okay"
+      }
+    },
+    "editProfileModal": {
+      "title": "Update Profile",
+      "fullName": "Full Name",
+      "email": "Email",
+      "age": "Age",
+      "namePlaceholder": "Enter your name",
+      "emailPlaceholder": "Enter your email",
+      "agePlaceholder": "Enter your age",
+      "tapToChangePhoto": "Tap to change photo",
+      "cancel": "Cancel",
+      "save": "Save",
+      "errors": {
+        "updateFailed": "Failed to update profile",
+        "noChanges": "No Changes",
+        "makeChangesBeforeSaving": "Please make changes before saving",
+        "uploadError": "Upload Error",
+        "uploadFailed": "Failed to upload image",
+        "takePhotoFailed": "Failed to take photo",
+        "pickImageFailed": "Failed to pick image",
+        "permissionRequired": "Permission Required",
+        "cameraPermission": "We need access to your camera to take a photo.",
+        "photoLibraryPermission": "We need access to your photos to set a profile picture."
+      },
+      "success": {
+        "profileUpdated": "Profile Updated",
+        "profileUpdatedMessage": "Your profile has been updated successfully"
+      },
+      "selectPhoto": {
+        "title": "Select Photo",
+        "chooseOption": "Choose an option",
+        "camera": "Camera",
+        "photoLibrary": "Photo Library",
+        "cancel": "Cancel"
+      }
+    },
+    "deleteAccountModal": {
+      "title": "Are you sure?",
+      "warning": "Once you close your account, all your data will be permanently deleted. You won't be able to recover it later.",
+      "cancel": "Cancel",
+      "yesClose": "Yes, Close",
+      "errors": {
+        "deleteRequestFailed": "Failed to submit delete request"
+      },
+      "success": {
+        "deleteRequestSubmitted": "Delete Request Submitted",
+        "deleteRequestMessage": "Your account deletion request has been submitted. It will be processed soon."
+      }
+    },
+    "languageChangeModal": {
+      "title": "Change Language",
+      "confirmMessage": "Are you sure you want to change the language from {current} to {new}?",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "errors": {
+        "updateFailed": "Failed to update language"
+      },
+      "success": {
+        "languageUpdated": "Language Updated",
+        "languageChangedTo": "Language changed to {language}"
+      }
+    },
+    "logout": {
+      "success": {
+        "loggedOut": "Logged Out",
+        "loggedOutMessage": "You have been successfully logged out"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "View your notifications"
+  },
+  "faq": {
+    "title": "FAQ's",
+    "subtitle": "Frequently Asked Questions"
+  },
+  "explainerVideos": {
+    "title": "Explainer Videos",
+    "subtitle": "Watch helpful explainer videos"
+  },
+  "emergencyHelp": {
+    "title": "Emergency Help",
+    "subtitle": "Get emergency assistance"
+  },
+  "menu": {
+    "tasks": {
+      "title": "Tasks",
+      "myTemplates": "My Templates",
+      "masterWeek": "Master Week",
+      "labels": "Labels (Areas of Life)"
+    },
+    "analysis": {
+      "title": "Analysis",
+      "depressionAnalysis": "Depression Analysis"
+    },
+    "support": {
+      "title": "Support",
+      "explainerVideos": "Explainer Videos",
+      "emergencyHelp": "Emergency Help",
+      "faq": "Frequently Asked Questions"
+    },
+    "profile": {
+      "title": "Profile",
+      "settings": "Settings"
+    }
+  },
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View",
+      "add": "Add",
+      "back": "Back",
+      "close": "Close",
+      "confirm": "Confirm",
+      "submit": "Submit",
+      "reset": "Reset",
+      "search": "Search",
+      "filter": "Filter",
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "deleting": "Deleting...",
+      "continue": "Continue",
+      "skip": "Skip",
+      "done": "Done",
+      "okay": "Okay",
+      "accept": "Accept",
+      "reject": "Reject",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "messages": {
+      "success": {
+        "saved": "Changes saved successfully",
+        "updated": "Updated successfully",
+        "deleted": "Deleted successfully",
+        "created": "Created successfully"
+      },
+      "error": {
+        "generic": "An unexpected error occurred",
+        "networkError": "Network error. Please check your internet connection.",
+        "loadError": "Error loading data",
+        "saveError": "Error saving data",
+        "deleteError": "Error deleting data",
+        "validationError": "Validation error",
+        "permissionDenied": "Permission denied"
+      },
+      "warning": {
+        "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+        "deleteConfirmation": "Are you sure you want to delete this item? This action cannot be undone."
+      },
+      "info": {
+        "noData": "No data available",
+        "loading": "Loading data...",
+        "processing": "Processing..."
+      }
+    },
+    "validation": {
+      "required": "{field} is required",
+      "minLength": "{field} must be at least {min} characters long",
+      "maxLength": "{field} must be no more than {max} characters long",
+      "invalid": "{field} is not valid",
+      "emailInvalid": "{field} is not a valid email",
+      "phoneInvalid": "{field} is not a valid phone number",
+      "matchMismatch": "{field} does not match"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "cancelled": "Cancelled",
+      "scheduled": "Scheduled"
+    },
+    "labels": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "actions": "Actions",
+      "description": "Description",
+      "notes": "Notes",
+      "noData": "No data available",
+      "loading": "Loading...",
+      "search": "Search...",
+      "select": "Select...",
+      "choose": "Choose..."
+    },
+    "time": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "tomorrow": "Tomorrow",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month",
+      "justNow": "Just now",
+      "minutesAgo": "{count} minute{plural} ago",
+      "hoursAgo": "{count} hour{plural} ago",
+      "daysAgo": "{count} day{plural} ago",
+      "weeksAgo": "{count} week{plural} ago",
+      "monthsAgo": "{count} month{plural} ago"
+    }
+  }
+}
