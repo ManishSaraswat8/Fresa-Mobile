@@ -80,9 +80,6 @@ export default function OnboardingVideoScreen() {
     };
 
     const handleContinue = async () => {
-        if (!hasWatchedComplete) {
-            return;
-        }
         // Mark onboarding as complete
         dispatch(setOnboardingComplete());
         await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
@@ -119,15 +116,11 @@ export default function OnboardingVideoScreen() {
                     )}
                 </View>
                 <TouchableOpacity
-                    style={[
-                        styles.button,
-                        !hasWatchedComplete && styles.buttonDisabled
-                    ]}
+                    style={styles.button}
                     onPress={handleContinue}
-                    disabled={!hasWatchedComplete}
                 >
                     <Text style={styles.buttonText}>
-                        Continue
+                        Skip & Continue
                     </Text>
                 </TouchableOpacity>
             </View>
