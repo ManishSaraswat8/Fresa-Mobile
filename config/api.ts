@@ -14,31 +14,17 @@
 
 export const API_CONFIG = {
     // Core API - handles auth, users, patients, clinics, etc.
-    CORE_API_URL: 'https://api-core.fresahealth.com',
+    CORE_API_URL: 'https://chnpfresadevruxopnmg-fresa-core-dev.functions.fnc.fr-par.scw.cloud',
 
     // Templates API - handles tasks, templates, journeys, etc.
-    TEMPLATES_API_URL: 'https://api-templates.fresahealth.com',
+    TEMPLATES_API_URL: 'https://chnpfresadevruxopnmg-fresa-templates-dev.functions.fnc.fr-par.scw.cloud',
 
     // Analytics API - handles dashboard, analytics, config, etc.
-    ANALYTICS_API_URL: 'https://api-analytics.fresahealth.com',
+    ANALYTICS_API_URL: 'https://chnpfresadevruxopnmg-fresa-analytics-dev.functions.fnc.fr-par.scw.cloud',
 
     // WebSocket API - handles real-time updates
-    WEBSOCKET_URL: 'wss://api-websocket.fresahealth.com',
+    WEBSOCKET_URL: 'ws://chnpfresadevruxopnmg-fresa-websocket-dev.functions.fnc.fr-par.scw.cloud',
 };
-
-// export const API_CONFIG = {
-//   // Core API - handles auth, users, patients, clinics, etc.
-//   CORE_API_URL: 'http://192.168.1.5:3001',
-
-//   // Templates API - handles tasks, templates, journeys, etc.
-//   TEMPLATES_API_URL: 'http://192.168.1.5:3002',
-
-//   // Analytics API - handles dashboard, analytics, config, etc.
-//   ANALYTICS_API_URL: 'http://192.168.1.5:3000',
-
-//   // WebSocket API - handles real-time updates
-//   WEBSOCKET_URL:'ws://192.168.1.5:3006',
-// };
 
 // Storage keys for AsyncStorage
 export const STORAGE_KEYS = {
@@ -47,6 +33,7 @@ export const STORAGE_KEYS = {
     USER_DATA: 'user_data',
     ONBOARDING_COMPLETE: 'hasCompletedOnboarding',
     PHONE_NUMBER: 'phone_number',
+    CLINIC_ID: 'clinic_id',
     PIN: 'pin',
     PUSH_TOKEN: 'push_token',
 };

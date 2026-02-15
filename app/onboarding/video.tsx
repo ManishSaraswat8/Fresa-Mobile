@@ -1,31 +1,26 @@
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Dimensions,
-    ActivityIndicator,
-} from 'react-native';
-import {useState, useRef, useEffect} from 'react';
+import {ActivityIndicator, Dimensions, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {useEffect, useRef, useState} from 'react';
 import {useRouter} from 'expo-router';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Video, ResizeMode, AVPlaybackStatus} from 'expo-av';
+import {AVPlaybackStatus, ResizeMode, Video} from 'expo-av';
 import {useDispatch} from 'react-redux';
 import {setOnboardingComplete} from '@/slices/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {STORAGE_KEYS} from '@/config/api';
+import {getPublicOnboardingVideos} from '@/services/mediaService';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
-// TODO: Replace with actual 1-minute onboarding video URL
-// Video should be approximately 1 minute (60 seconds) in duration
-const ONBOARDING_VIDEO_URI =
+// Fallback video when no clinic-specific onboarding video is configured
+const FALLBACK_VIDEO_URI =
     'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
 
 export default function OnboardingVideoScreen() {
     const router = useRouter();
     const dispatch = useDispatch();
     const videoRef = useRef<Video>(null);
+    const [videoUri, setVideoUri] = useState<string | null>(null);
+    const [isFetchingVideo, setIsFetchingVideo] = useState(true);
     const [hasWatchedComplete, setHasWatchedComplete] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [videoStatus, setVideoStatus] = useState<AVPlaybackStatus | null>(
@@ -33,8 +28,39 @@ export default function OnboardingVideoScreen() {
     );
 
     useEffect(() => {
+        let cancelled = false;
+        const loadClinicVideo = async () => {
+            try {
+                const clinicId = await AsyncStorage.getItem(STORAGE_KEYS.CLINIC_ID);
+                if (clinicId) {
+                    const items = await getPublicOnboardingVideos(clinicId);
+                    const firstVideo = items.find((i) => i.url);
+                    if (!cancelled && firstVideo?.url) {
+                        setVideoUri(firstVideo.url);
+                        return;
+                    }
+                }
+                if (!cancelled) {
+                    setVideoUri(FALLBACK_VIDEO_URI);
+                }
+            } catch {
+                if (!cancelled) {
+                    setVideoUri(FALLBACK_VIDEO_URI);
+                }
+            } finally {
+                if (!cancelled) {
+                    setIsFetchingVideo(false);
+                }
+            }
+        };
+        loadClinicVideo();
         return () => {
-            // Cleanup video on unmount
+            cancelled = true;
+        };
+    }, []);
+
+    useEffect(() => {
+        return () => {
             videoRef.current?.unloadAsync();
         };
     }, []);
@@ -57,7 +83,6 @@ export default function OnboardingVideoScreen() {
         if (!hasWatchedComplete) {
             return;
         }
-
         // Mark onboarding as complete
         dispatch(setOnboardingComplete());
         await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');
@@ -76,30 +101,33 @@ export default function OnboardingVideoScreen() {
                 </Text>
 
                 <View style={styles.videoContainer}>
-                    {isLoading && (
+                    {(isFetchingVideo || isLoading) && (
                         <View style={styles.loadingContainer}>
                             <ActivityIndicator size="large" color="#F6B8A3"/>
                         </View>
                     )}
-                    <Video
-                        ref={videoRef}
-                        source={{uri: ONBOARDING_VIDEO_URI}}
-                        style={styles.video}
-                        resizeMode={ResizeMode.CONTAIN}
-                        useNativeControls={false}
-                        onPlaybackStatusUpdate={handleVideoStatusUpdate}
-                        shouldPlay
-                    />
+                    {!isFetchingVideo && videoUri && (
+                        <Video
+                            ref={videoRef}
+                            source={{uri: videoUri}}
+                            style={styles.video}
+                            resizeMode={ResizeMode.CONTAIN}
+                            useNativeControls={false}
+                            onPlaybackStatusUpdate={handleVideoStatusUpdate}
+                            shouldPlay
+                        />
+                    )}
                 </View>
                 <TouchableOpacity
                     style={[
                         styles.button,
-                        (!hasWatchedComplete && styles.buttonDisabled),
+                        !hasWatchedComplete && styles.buttonDisabled
                     ]}
                     onPress={handleContinue}
+                    disabled={!hasWatchedComplete}
                 >
                     <Text style={styles.buttonText}>
-                        Skip & Continue
+                        Continue
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -133,7 +161,7 @@ const styles = StyleSheet.create({
     },
     videoContainer: {
         width: '100%',
-        height: SCREEN_HEIGHT * 0.4,
+        height: SCREEN_HEIGHT * 0.6,
         backgroundColor: '#000',
         borderRadius: 12,
         overflow: 'hidden',

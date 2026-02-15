@@ -1,21 +1,21 @@
 import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    TextInput,
+    ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
-    ActivityIndicator,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import {useState, useRef, useEffect} from 'react';
-import {useRouter, useRootNavigationState} from 'expo-router';
+import {useEffect, useRef, useState} from 'react';
+import {useRootNavigationState, useRouter} from 'expo-router';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
-import {setUser, clearUser, resetOnboarding} from '@/slices/userSlice';
+import {clearUser, resetOnboarding, setUser} from '@/slices/userSlice';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {login, clearAllAppStorage} from '@/services/authService';
+import {clearAllAppStorage, login} from '@/services/authService';
 import {STORAGE_KEYS} from '@/config/api';
 
 export default function LoginScreen() {
@@ -262,8 +262,7 @@ export default function LoginScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Temp: clear all storage and go to onboarding
-          <TouchableOpacity style={styles.clearStorageButton} onPress={handleClearStorage}>
+          {/* <TouchableOpacity style={styles.clearStorageButton} onPress={handleClearStorage}>
             <Text style={styles.clearStorageText}>Clear storage & start fresh</Text>
           </TouchableOpacity> */}
                 </View>

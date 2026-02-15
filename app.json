@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Fresa Health",
-    "slug": "FresaMobile",
-    "version": "1.1.4",
+    "name": "Fresa Health CHNP",
+    "slug": "FresaMobileCHNP",
+    "version": "1.0.0",
     "runtimeVersion": {
       "policy": "appVersion"
     },
@@ -10,7 +10,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "scheme": "fresamobile",
+    "scheme": "fresamobilechnp",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -18,17 +18,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.fresahealth.mobile",
+      "bundleIdentifier": "com.fresahealth.mobilechnp",
       "companyName": "FresaHealth GmbH",
-      "displayName": "Fresa Health",
+      "displayName": "Fresa Health CHNP",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app needs access to your microphone to record voice feedback.",
         "NSContactsUsageDescription": "This app needs access to your contacts to detect your phone number.",
         "NSCameraUsageDescription": "This app needs access to your camera to take profile photos.",
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select profile photos.",
         "ITSAppUsesNonExemptEncryption": false,
-        "CFBundleDisplayName": "Fresa Health",
-        "CFBundleName": "Fresa Health"
+        "CFBundleDisplayName": "Fresa Health CHNP",
+        "CFBundleName": "Fresa Health CHNP"
       },
       "notification": {
         "icon": "./assets/icon.png",
@@ -42,7 +42,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.fresahealth.mobile",
+      "package": "com.fresahealth.mobilechnp",
       "permissions": [
         "READ_EXTERNAL_STORAGE",
         "READ_MEDIA_IMAGES",
@@ -76,8 +76,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "70e75a09-e301-4cf9-8707-fefd3424c741"
+        "projectId": "20bc1c89-d9fc-4f06-9c72-5e7f9ccd5bcf"
       }
-    }
+    },
+    "owner": "sarswatmanish8"
   }
 }

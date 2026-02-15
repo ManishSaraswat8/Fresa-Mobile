@@ -1,10 +1,10 @@
 import {Redirect} from 'expo-router';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {View, ActivityIndicator, StyleSheet} from 'react-native';
-import {setUser, clearUser, setOnboardingComplete} from '@/slices/userSlice';
-import {isAuthenticated as checkAuth, getUserData, getTokens, checkPatientByPhone} from '@/services/authService';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {clearUser, setOnboardingComplete, setUser} from '@/slices/userSlice';
+import {checkPatientByPhone, getTokens, getUserData, isAuthenticated as checkAuth} from '@/services/authService';
 import {STORAGE_KEYS} from '@/config/api';
 
 export default function Index() {
@@ -38,6 +38,9 @@ export default function Index() {
 
             // Phone number exists - check if user has already signed up on mobile app
             const phoneCheck = await checkPatientByPhone(storedPhone);
+            if (phoneCheck.clinic_id) {
+                await AsyncStorage.setItem(STORAGE_KEYS.CLINIC_ID, phoneCheck.clinic_id);
+            }
             if (phoneCheck.exists && phoneCheck.mobile_app_signed_up) {
                 // User already signed up on mobile app - mark onboarding as complete
                 await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_COMPLETE, 'true');

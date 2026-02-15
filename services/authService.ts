@@ -202,7 +202,8 @@ export async function getTokens(): Promise<{ token: string | null; auth_token: s
  */
 export async function checkPatientByPhone(phoneNumber: string): Promise<{
     exists: boolean;
-    mobile_app_signed_up: boolean
+    mobile_app_signed_up: boolean;
+    clinic_id?: string | null;
 }> {
     try {
         const response = await fetch(
@@ -222,15 +223,16 @@ export async function checkPatientByPhone(phoneNumber: string): Promise<{
 
         const data = await response.json();
 
-        // Backend returns { message, data: { exists: boolean, mobile_app_signed_up: boolean } }
+        // Backend returns { message, data: { exists, mobile_app_signed_up, clinic_id? } }
         if (data.data && typeof data.data.exists === 'boolean') {
             return {
                 exists: data.data.exists,
-                mobile_app_signed_up: data.data.mobile_app_signed_up || false
+                mobile_app_signed_up: data.data.mobile_app_signed_up || false,
+                clinic_id: data.data.clinic_id || null,
             };
         }
 
-        return {exists: false, mobile_app_signed_up: false};
+        return {exists: false, mobile_app_signed_up: false, clinic_id: null};
     } catch (error: any) {
         console.error('Error checking phone number:', error);
         // On error, return false to be safe (don't allow unregistered numbers)

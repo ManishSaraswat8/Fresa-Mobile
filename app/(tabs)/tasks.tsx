@@ -1,18 +1,10 @@
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-    Modal,
-    ActivityIndicator,
-} from 'react-native';
+import {ActivityIndicator, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {AppWrapper} from '@/app/component/AppWrapper';
 import {Feather} from '@expo/vector-icons';
-import {useState, useEffect, useCallback} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useRouter} from 'expo-router';
 import {useFocusEffect} from '@react-navigation/native';
-import {getPatientTasks, Task, formatTaskTime, getStatusLabel, getStatusColor} from '@/services/dashboardService';
+import {formatTaskTime, getPatientTasks, getStatusColor, getStatusLabel, Task} from '@/services/dashboardService';
 import {websocketService} from '@/services/websocketService';
 import {getUserData} from '@/services/authService';
 import Toast from 'react-native-toast-message';
@@ -43,7 +35,7 @@ interface DailyTask {
 
 export default function TasksScreen() {
     const router = useRouter();
-    const [selectedFilter, setSelectedFilter] = useState<'Mine' | 'Clinic' | 'Repeat'>('Mine');
+    const [selectedFilter, setSelectedFilter] = useState<'All' | 'Mine' | 'Clinic' | 'Repeat'>('All');
     const [viewMode, setViewMode] = useState<'Weekly' | 'Daily'>('Weekly');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
@@ -251,8 +243,12 @@ export default function TasksScreen() {
     const getFilteredTasks = (): Task[] => {
         let filtered = [...tasks];
 
-        // Filter by Mine/Clinic/Repeat
-        if (selectedFilter === 'Mine') {
+        // Filter by All/Mine/Clinic/Repeat
+        if (selectedFilter === 'All') {
+            // All = show all tasks (no filter)
+            filtered = tasks;
+            console.log(`🔍 [Tasks] Filter "All": ${filtered.length} tasks`);
+        } else if (selectedFilter === 'Mine') {
             // Tasks created by the user (where clinic_id is null/undefined, meaning user created it)
             filtered = tasks.filter(task => {
                 // "Mine" = tasks without clinic_id (user-created tasks)
@@ -393,7 +389,7 @@ export default function TasksScreen() {
                 <View style={styles.fixedFiltersSection}>
                     {/* Filter Buttons */}
                     <View style={styles.filterContainer}>
-                        {(['Mine', 'Clinic', 'Repeat'] as const).map((filter) => (
+                        {(['All', 'Mine', 'Clinic', 'Repeat'] as const).map((filter) => (
                             <TouchableOpacity
                                 key={filter}
                                 style={[

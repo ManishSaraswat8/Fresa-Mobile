@@ -26,6 +26,8 @@ export interface Task {
     challenge_ids?: string[];
     user_id?: string;
     clinic_id?: string;
+    qr_scan_required_to_start_task?: boolean;
+    qr_scan_required_to_complete_task?: boolean;
     createdAt?: string;
     updatedAt?: string;
 }

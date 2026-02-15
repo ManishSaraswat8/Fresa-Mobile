@@ -1,28 +1,22 @@
 import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    TextInput,
-    KeyboardAvoidingView,
-    Platform,
     Alert,
-    Modal,
-    ScrollView,
     BackHandler,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
-import {useState, useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useRouter} from 'expo-router';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CountryPicker, {Country, CountryCode} from 'react-native-country-picker-modal';
-import {
-    parsePhoneNumber,
-    formatIncompletePhoneNumber,
-    isValidPhoneNumber,
-    AsYouType,
-} from 'libphonenumber-js';
+import {AsYouType, isValidPhoneNumber, parsePhoneNumber,} from 'libphonenumber-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Feather} from '@expo/vector-icons';
 import {checkPatientByPhone} from '@/services/authService';
 import {STORAGE_KEYS} from '@/config/api';
 
@@ -33,7 +27,7 @@ export default function PhoneNumberScreen() {
     const phoneInputRef = useRef<TextInput>(null);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [formattedNumber, setFormattedNumber] = useState('');
-    const [countryCode, setCountryCode] = useState('US');
+    const [countryCode, setCountryCode] = useState<CountryCode>('DE');
     const [callingCode, setCallingCode] = useState('+49');
     const [showCountryPicker, setShowCountryPicker] = useState(false);
     const [isValid, setIsValid] = useState(false);
@@ -133,6 +127,11 @@ export default function PhoneNumberScreen() {
 
                 // Phone number is registered - store it
                 await AsyncStorage.setItem(STORAGE_KEYS.PHONE_NUMBER, fullPhoneNumber);
+                if (phoneCheck.clinic_id) {
+                    await AsyncStorage.setItem(STORAGE_KEYS.CLINIC_ID, phoneCheck.clinic_id);
+                } else {
+                    await AsyncStorage.removeItem(STORAGE_KEYS.CLINIC_ID);
+                }
 
                 // Check if user has already signed up on mobile app
                 if (phoneCheck.mobile_app_signed_up) {
@@ -163,8 +162,10 @@ export default function PhoneNumberScreen() {
     };
 
     const onSelectCountry = (country: Country) => {
-        setCountryCode(country.cca2);
-        setCallingCode(`+${country.callingCode[0]}`);
+        const newCountryCode = country.cca2 as CountryCode;
+        const newCallingCode = `+${country.callingCode[0]}`;
+        setCountryCode(newCountryCode);
+        setCallingCode(newCallingCode);
         setShowCountryPicker(false);
         // Reset phone number and validation when country changes
         setPhoneNumber('');

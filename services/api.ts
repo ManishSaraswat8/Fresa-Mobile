@@ -199,6 +199,26 @@ export async function deletePatientTask(taskId: string) {
     });
 }
 
+export interface ValidateTaskQRResponse {
+    task_id: string;
+    action: 'start' | 'complete';
+    task_title: string;
+}
+
+/**
+ * Validate a scanned task QR code
+ * Returns task_id, action (start|complete), and task_title
+ */
+export async function validateTaskQRCode(qrData: string): Promise<ValidateTaskQRResponse> {
+    return fetchData<ValidateTaskQRResponse>(
+        `${API_CONFIG.TEMPLATES_API_URL}/qr-code/task/validate`,
+        {
+            method: 'POST',
+            body: JSON.stringify({qr_data: qrData}),
+        }
+    );
+}
+
 /**
  * Get all task labels
  */

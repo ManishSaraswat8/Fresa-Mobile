@@ -1,20 +1,22 @@
 import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
     ActivityIndicator,
     Alert,
-    Linking,
     Image,
+    Linking,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import {AppWrapper} from '@/app/component/AppWrapper';
 import {Feather} from '@expo/vector-icons';
-import {useRouter, useLocalSearchParams} from 'expo-router';
-import {useState, useEffect} from 'react';
-import {getPatientTaskById, Task, formatTaskTime, getStatusLabel, getStatusColor} from '@/services/dashboardService';
-import {deletePatientTask, updatePatientTask} from '@/services/api';
+import {useLocalSearchParams, useRouter} from 'expo-router';
+import {useEffect, useState} from 'react';
+import {CameraView, useCameraPermissions} from 'expo-camera';
+import {formatTaskTime, getPatientTaskById, getStatusColor, getStatusLabel, Task} from '@/services/dashboardService';
+import {deletePatientTask, updatePatientTask, validateTaskQRCode} from '@/services/api';
 import Toast from 'react-native-toast-message';
 import {ConfirmDialog} from '@/app/component/ConfirmDialog';
 
@@ -28,6 +30,9 @@ export default function TaskDetailsScreen() {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+    const [showQrScanModal, setShowQrScanModal] = useState(false);
+    const [qrScanned, setQrScanned] = useState(false);
+    const [permission, requestPermission] = useCameraPermissions();
 
     useEffect(() => {
         if (taskId) {
@@ -147,6 +152,65 @@ export default function TaskDetailsScreen() {
 
     const handleCompleteTask = async () => {
         await handleStatusChange('COMPLETED');
+    };
+
+    const handleQrScanned = async (result: { type: string; data: string }) => {
+        if (!task || qrScanned || isUpdatingStatus) return;
+
+        const qrData = result.data?.trim();
+        if (!qrData) return;
+
+        const expectedAction = task.status === 'PENDING' ? 'start' : 'complete';
+        setQrScanned(true);
+        setIsUpdatingStatus(true);
+
+        try {
+            const validateResult = await validateTaskQRCode(qrData);
+
+            if (validateResult.task_id !== taskId) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Wrong QR Code',
+                    text2: 'This QR code is for a different task.',
+                    position: 'top',
+                });
+                setQrScanned(false);
+                return;
+            }
+
+            if (validateResult.action !== expectedAction) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Wrong Action',
+                    text2: `This QR code is for "${validateResult.action}", not "${expectedAction}"`,
+                    position: 'top',
+                });
+                setQrScanned(false);
+                return;
+            }
+
+            const newStatus = expectedAction === 'start' ? 'IN_PROGRESS' : 'COMPLETED';
+            await updatePatientTask(taskId, {status: newStatus});
+            await loadTask();
+
+            Toast.show({
+                type: 'success',
+                text1: 'Success',
+                text2: expectedAction === 'start' ? 'Task started!' : 'Task completed!',
+                position: 'top',
+            });
+            setShowQrScanModal(false);
+        } catch (error: any) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: error.message || 'Invalid QR code or failed to update task',
+                position: 'top',
+            });
+            setQrScanned(false);
+        } finally {
+            setIsUpdatingStatus(false);
+        }
     };
 
     const handleStatusChange = async (newStatus: 'COMPLETED' | 'IN_PROGRESS' | 'ON_HOLD' | 'PENDING') => {
@@ -388,6 +452,7 @@ export default function TaskDetailsScreen() {
     const isUpcoming = task.status === 'PENDING' && !isMissed;
     const isInProgress = task.status === 'IN_PROGRESS';
     const isCompleted = task.status === 'COMPLETED';
+    const isPatientCreatedTask = !task.clinic_id || String(task.clinic_id || '').trim() === '';
 
     return (
         <AppWrapper headerTitle="Task Details" headerVariant="default">
@@ -424,8 +489,8 @@ export default function TaskDetailsScreen() {
                     </View>
                 </View>
 
-                {/* Action Buttons - Based on Status */}
-                {isMissed && (
+                {/* Action Buttons - Only for patient-created tasks (not clinic-assigned) */}
+                {isPatientCreatedTask && isMissed && (
                     <View style={styles.actionButtons}>
                         <TouchableOpacity
                             style={[styles.actionButton, styles.rescheduleButton]}
@@ -452,7 +517,7 @@ export default function TaskDetailsScreen() {
                     </View>
                 )}
 
-                {isUpcoming && (
+                {isPatientCreatedTask && isUpcoming && (
                     <View style={styles.actionButtons}>
                         <TouchableOpacity
                             style={[styles.actionButton, styles.rescheduleButton]}
@@ -487,7 +552,7 @@ export default function TaskDetailsScreen() {
                     </View>
                 )}
 
-                {isInProgress && (
+                {isPatientCreatedTask && isInProgress && (
                     <View style={styles.actionButtons}>
                         <TouchableOpacity
                             style={[styles.actionButton, styles.reuseButton]}
@@ -510,8 +575,24 @@ export default function TaskDetailsScreen() {
                     </View>
                 )}
 
-                {/* Quick Actions - Based on Status */}
-                {isUpcoming && (
+                {/* Quick Actions - Scan QR button (when required) or Start/Complete (when not) */}
+                {isUpcoming && task.qr_scan_required_to_start_task && (
+                    <View style={styles.quickActions}>
+                        <Text style={styles.quickActionsTitle}>Quick Actions</Text>
+                        <TouchableOpacity
+                            style={styles.quickActionButton}
+                            onPress={() => {
+                                setQrScanned(false);
+                                setShowQrScanModal(true);
+                            }}
+                        >
+                            <Feather name="maximize-2" size={20} color="#2196F3"/>
+                            <Text style={styles.quickActionButtonText}>Scan QR for Start</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {isUpcoming && !task.qr_scan_required_to_start_task && (
                     <View style={styles.quickActions}>
                         <Text style={styles.quickActionsTitle}>Quick Actions</Text>
                         <TouchableOpacity
@@ -534,7 +615,23 @@ export default function TaskDetailsScreen() {
                     </View>
                 )}
 
-                {isInProgress && (
+                {isInProgress && task.qr_scan_required_to_complete_task && (
+                    <View style={styles.quickActions}>
+                        <Text style={styles.quickActionsTitle}>Quick Actions</Text>
+                        <TouchableOpacity
+                            style={styles.quickActionButton}
+                            onPress={() => {
+                                setQrScanned(false);
+                                setShowQrScanModal(true);
+                            }}
+                        >
+                            <Feather name="maximize-2" size={20} color="#4CAF50"/>
+                            <Text style={styles.quickActionButtonText}>Scan QR for Complete</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {isInProgress && !task.qr_scan_required_to_complete_task && (
                     <View style={styles.quickActions}>
                         <Text style={styles.quickActionsTitle}>Quick Actions</Text>
                         <TouchableOpacity
@@ -699,39 +796,103 @@ export default function TaskDetailsScreen() {
                     </View>
                 )}
 
-                {/* Additional Info */}
-                <View style={styles.section}>
-                    <View style={styles.sectionHeader}>
-                        <Feather name="info" size={20} color="#8B4513"/>
-                        <Text style={styles.sectionTitle}>Additional Information</Text>
+                {/* Additional Info - only show when there is data */}
+                {(task.createdAt || task.updatedAt) && (
+                    <View style={styles.section}>
+                        <View style={styles.sectionHeader}>
+                            <Feather name="info" size={20} color="#8B4513"/>
+                            <Text style={styles.sectionTitle}>Additional Information</Text>
+                        </View>
+                        {task.createdAt && (
+                            <View style={styles.infoRow}>
+                                <Text style={styles.infoLabel}>Created:</Text>
+                                <Text style={styles.infoValue}>
+                                    {new Date(task.createdAt).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                </Text>
+                            </View>
+                        )}
+                        {task.updatedAt && (
+                            <View style={styles.infoRow}>
+                                <Text style={styles.infoLabel}>Last Updated:</Text>
+                                <Text style={styles.infoValue}>
+                                    {new Date(task.updatedAt).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                    })}
+                                </Text>
+                            </View>
+                        )}
                     </View>
-                    {task.createdAt && (
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Created:</Text>
-                            <Text style={styles.infoValue}>
-                                {new Date(task.createdAt).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })}
-                            </Text>
-                        </View>
-                    )}
-                    {task.updatedAt && (
-                        <View style={styles.infoRow}>
-                            <Text style={styles.infoLabel}>Last Updated:</Text>
-                            <Text style={styles.infoValue}>
-                                {new Date(task.updatedAt).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })}
-                            </Text>
-                        </View>
-                    )}
-                </View>
+                )}
 
             </ScrollView>
+
+            {/* QR Scan Modal */}
+            <Modal
+                visible={showQrScanModal}
+                transparent
+                animationType="slide"
+                statusBarTranslucent
+                onRequestClose={() => {
+                    if (!isUpdatingStatus) setShowQrScanModal(false);
+                }}
+            >
+                <View style={styles.qrModalOverlay}>
+                    <View style={styles.qrModalContent}>
+                        <View style={styles.qrModalHeader}>
+                            <Text style={styles.qrModalTitle}>
+                                {task?.status === 'PENDING' ? 'Scan QR for Start' : 'Scan QR for Complete'}
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.qrModalCloseButton}
+                                onPress={() => !isUpdatingStatus && setShowQrScanModal(false)}
+                                disabled={isUpdatingStatus}
+                            >
+                                <Feather name="x" size={24} color="#1A1D1F"/>
+                            </TouchableOpacity>
+                        </View>
+                        {!permission ? (
+                            <View style={styles.qrModalBody}>
+                                <ActivityIndicator size="large" color="#F6B8A3"/>
+                                <Text style={styles.qrModalMessage}>Checking camera...</Text>
+                            </View>
+                        ) : !permission.granted ? (
+                            <View style={styles.qrModalBody}>
+                                <Feather name="camera" size={48} color="#6B7280"/>
+                                <Text style={styles.qrModalMessage}>
+                                    Camera permission is needed to scan QR codes.
+                                </Text>
+                                <TouchableOpacity
+                                    style={styles.qrModalPermissionButton}
+                                    onPress={requestPermission}
+                                >
+                                    <Text style={styles.qrModalPermissionButtonText}>Grant Permission</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <View style={styles.qrScannerContainer}>
+                                <CameraView
+                                    style={styles.qrScanner}
+                                    facing="back"
+                                    barcodeScannerSettings={{barcodeTypes: ['qr']}}
+                                    onBarcodeScanned={qrScanned || isUpdatingStatus ? undefined : handleQrScanned}
+                                />
+                                {isUpdatingStatus && (
+                                    <View style={styles.qrScannerOverlay}>
+                                        <ActivityIndicator size="large" color="#F6B8A3"/>
+                                        <Text style={styles.qrScannerOverlayText}>Processing...</Text>
+                                    </View>
+                                )}
+                            </View>
+                        )}
+                    </View>
+                </View>
+            </Modal>
 
             {/* Delete Confirmation Dialog */}
             <ConfirmDialog
@@ -938,6 +1099,80 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#1A1D1F',
+    },
+    qrModalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    qrModalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        width: '100%',
+        maxWidth: 400,
+        overflow: 'hidden',
+        maxHeight: '85%',
+    },
+    qrModalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E5E7EB',
+    },
+    qrModalTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#1A1D1F',
+    },
+    qrModalCloseButton: {
+        padding: 4,
+    },
+    qrModalBody: {
+        padding: 32,
+        alignItems: 'center',
+        gap: 16,
+    },
+    qrModalMessage: {
+        fontSize: 16,
+        color: '#6B7280',
+        textAlign: 'center',
+    },
+    qrModalPermissionButton: {
+        backgroundColor: '#F6B8A3',
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 12,
+    },
+    qrModalPermissionButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#1A1D1F',
+    },
+    qrScannerContainer: {
+        position: 'relative',
+        overflow: 'hidden',
+        height: 320,
+        backgroundColor: '#000',
+    },
+    qrScanner: {
+        flex: 1,
+        height: 320,
+    },
+    qrScannerOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 12,
+    },
+    qrScannerOverlayText: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: '500',
     },
     section: {
         backgroundColor: '#fff',
