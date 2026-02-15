@@ -314,6 +314,29 @@ export async function getExplainerVideos() {
     return fetchData(`${API_CONFIG.ANALYTICS_API_URL}/explainer-videos`);
 }
 
+/**
+ * Public onboarding video item from Media Manager
+ */
+export interface PublicMediaItem {
+    _id: string;
+    name: string;
+    filename?: string;
+    type: string;
+    media_type: string;
+    contentType?: string;
+    url?: string;
+    size?: number;
+}
+
+/**
+ * Get onboarding video from Media Manager (public, no auth).
+ * Returns the first public onboarding video, or empty array if none.
+ */
+export async function getOnboardingVideo(): Promise<PublicMediaItem[]> {
+    const url = `${API_CONFIG.ANALYTICS_API_URL}/media-manager/public?type=onboarding`;
+    return fetchData<PublicMediaItem[]>(url, {}, false);
+}
+
 // Template API functions
 
 export interface GoalTemplate {
